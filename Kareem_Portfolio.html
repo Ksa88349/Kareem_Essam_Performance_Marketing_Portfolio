@@ -1,1 +1,932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>كريم عصام | Performance Marketing Specialist</title>
+
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:       '#0B0F19',
+            surface:  '#111827',
+            card:     '#141C2E',
+            border:   '#1E2A42',
+            emerald:  '#00FFB2',
+            cyan:     '#00D4FF',
+            muted:    '#6B7A99',
+            text:     '#E8EDF5',
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            mono:  ['Space Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #0B0F19;
+      color: #E8EDF5;
+      font-family: 'Cairo', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,178,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,178,0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Glow radials ── */
+    .glow-emerald {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,178,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Neon text ── */
+    .neon-text {
+      color: #00FFB2;
+      text-shadow: 0 0 20px rgba(0,255,178,0.5), 0 0 40px rgba(0,255,178,0.2);
+    }
+
+    .neon-cyan {
+      color: #00D4FF;
+      text-shadow: 0 0 20px rgba(0,212,255,0.5);
+    }
+
+    /* ── Cards ── */
+    .glass-card {
+      background: linear-gradient(135deg, #141C2E 0%, #0F1724 100%);
+      border: 1px solid #1E2A42;
+      border-radius: 16px;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .glass-card:hover {
+      border-color: rgba(0,255,178,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,255,178,0.08);
+    }
+
+    /* ── Metric counter cards ── */
+    .metric-card {
+      background: linear-gradient(135deg, #0F1724 0%, #141C2E 100%);
+      border: 1px solid #1E2A42;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00FFB2, #00D4FF);
+    }
+
+    /* ── Status badges ── */
+    .badge-active {
+      background: rgba(0,255,178,0.12);
+      color: #00FFB2;
+      border: 1px solid rgba(0,255,178,0.3);
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.75rem;
+      font-family: 'Space Mono', monospace;
+    }
+    .badge-stopped {
+      background: rgba(107,122,153,0.12);
+      color: #6B7A99;
+      border: 1px solid rgba(107,122,153,0.25);
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.75rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ── Progress bar ── */
+    .prog-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: #1E2A42;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #00FFB2, #00D4FF);
+    }
+
+    /* ── CTA button ── */
+    .btn-wa {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff;
+      border-radius: 50px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 30px rgba(37,211,102,0.35);
+      text-decoration: none;
+    }
+    .btn-wa:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(37,211,102,0.5);
+    }
+
+    /* ── Sticky WA button ── */
+    .sticky-wa {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 999;
+      animation: pulse-wa 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-wa {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
+      50%       { box-shadow: 0 0 0 14px rgba(37,211,102,0); }
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: #00FFB2;
+      text-transform: uppercase;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #1E2A42, transparent);
+      margin: 0;
+    }
+
+    /* ── Hero terminal line ── */
+    .terminal-line {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: #6B7A99;
+    }
+    .terminal-line span { color: #00FFB2; }
+
+    /* ── Counter animation ── */
+    .counter { transition: all 0.5s ease; }
+
+    /* ── Campaign card CPL highlight ── */
+    .cpl-best {
+      background: rgba(0,255,178,0.07);
+      border: 1px solid rgba(0,255,178,0.2);
+      border-radius: 10px;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: rgba(11,15,25,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #1E2A42;
+    }
+
+    /* ── Timeline dot ── */
+    .timeline-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #00FFB2;
+      box-shadow: 0 0 8px rgba(0,255,178,0.6);
+      flex-shrink: 0;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0B0F19; }
+    ::-webkit-scrollbar-thumb { background: #1E2A42; border-radius: 2px; }
+
+    @media (max-width: 640px) {
+      .sticky-wa { bottom: 16px; left: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────
+  STICKY WHATSAPP BUTTON
+───────────────────────────────────────── -->
+<a href="https://wa.me/201141931871"
+   target="_blank"
+   class="sticky-wa btn-wa"
+   style="padding: 14px 20px;">
+  <i class="fab fa-whatsapp text-xl"></i>
+  <span class="hidden sm:inline">واتساب</span>
+</a>
+
+<!-- ─────────────────────────────────────────
+  NAVIGATION
+───────────────────────────────────────── -->
+<nav class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="font-mono text-sm text-emerald-400" style="color:#00FFB2; font-family:'Space Mono',monospace;">
+      KE<span style="color:#6B7A99;">_</span>portfolio
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium" style="color:#6B7A99;">
+      <a href="#about" class="hover:text-white transition-colors">عني</a>
+      <a href="#metrics" class="hover:text-white transition-colors">الأرقام</a>
+      <a href="#casestudy" class="hover:text-white transition-colors">Case Study</a>
+      <a href="#campaigns" class="hover:text-white transition-colors">Campaigns</a>
+      <a href="#cta" class="hover:text-white transition-colors">تواصل</a>
+    </div>
+    <a href="https://wa.me/201141931871" target="_blank"
+       style="background:rgba(0,255,178,0.1); border:1px solid rgba(0,255,178,0.3); color:#00FFB2; border-radius:8px; padding:7px 18px; font-size:0.8rem; font-family:'Cairo',sans-serif; font-weight:600; text-decoration:none; transition:all 0.2s;"
+       onmouseover="this.style.background='rgba(0,255,178,0.2)'"
+       onmouseout="this.style.background='rgba(0,255,178,0.1)'">
+      تواصل معي
+    </a>
+  </div>
+</nav>
+
+<!-- ─────────────────────────────────────────
+  HERO SECTION
+───────────────────────────────────────── -->
+<section id="about" class="relative min-h-screen flex items-center pt-20 pb-16 px-6 overflow-hidden">
+
+  <!-- Glow blobs -->
+  <div class="glow-emerald" style="top:-100px; right:-100px;"></div>
+  <div class="glow-emerald" style="bottom:-100px; left:-200px; background: radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%);"></div>
+
+  <div class="max-w-6xl mx-auto w-full relative z-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+      <!-- Text side -->
+      <div>
+        <!-- Terminal badge -->
+        <div class="terminal-line mb-6">
+          <span>▶</span> performance_marketer.exe —— <span>running</span>
+        </div>
+
+        <div class="section-label mb-3">Meta Ads Specialist · B2B Lead Generation</div>
+
+        <h1 class="text-5xl sm:text-6xl font-black mb-2 leading-tight" style="line-height:1.15;">
+          كريم عصام
+        </h1>
+        <h2 class="text-xl sm:text-2xl font-semibold mb-6" style="color:#6B7A99;">
+          Performance Marketing Specialist<br/>
+          <span class="neon-cyan" style="font-size:1rem;">& Senior Media Buyer</span>
+        </h2>
+
+        <p class="text-base mb-4" style="color:#A8B4CC; max-width:520px;">
+          أساعد الشركات في <strong style="color:#E8EDF5;">القطاع الخدمي وB2B</strong> على تحقيق نمو حقيقي وقابل للقياس عبر استراتيجيات Meta Ads مبنية على البيانات — بتوليد <em>Qualified Leads</em> عالية النية بأقل تكلفة اكتساب ممكنة.
+        </p>
+        <p class="text-sm mb-8" style="color:#6B7A99; max-width:480px;">
+          خبرة <strong style="color:#00FFB2;">+3 سنوات</strong> في السوق الخدمي | متخصص في Real Estate، Education، Medical Services.
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="https://wa.me/201141931871" target="_blank" class="btn-wa">
+            <i class="fab fa-whatsapp text-lg"></i>
+            ابدأ النمو الآن
+          </a>
+          <a href="#campaigns"
+             style="border:1px solid #1E2A42; color:#A8B4CC; border-radius:50px; padding:14px 28px; font-family:'Cairo',sans-serif; font-weight:600; font-size:0.95rem; text-decoration:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:8px;"
+             onmouseover="this.style.borderColor='rgba(0,255,178,0.4)'; this.style.color='#00FFB2'"
+             onmouseout="this.style.borderColor='#1E2A42'; this.style.color='#A8B4CC'">
+            <i class="fas fa-chart-line text-sm"></i> شاهد النتائج
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats side -->
+      <div class="lg:pr-0">
+        <div class="glass-card p-6">
+          <div class="section-label mb-4">Live Dashboard Snapshot</div>
+
+          <div class="space-y-4">
+            <!-- Stat row -->
+            <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #1E2A42;">
+              <div class="flex items-center gap-3">
+                <div style="width:36px; height:36px; border-radius:10px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center;">
+                  <i class="fas fa-bullseye" style="color:#00FFB2; font-size:14px;"></i>
+                </div>
+                <div>
+                  <div class="text-xs" style="color:#6B7A99;">Total B2B Leads Generated</div>
+                  <div class="font-black text-2xl neon-text" id="c1">297</div>
+                </div>
+              </div>
+              <div class="text-xs font-mono" style="color:#6B7A99;">Leads</div>
+            </div>
+
+            <div class="flex items-center justify-between py-3" style="border-bottom:1px solid #1E2A42;">
+              <div class="flex items-center gap-3">
+                <div style="width:36px; height:36px; border-radius:10px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center;">
+                  <i class="fas fa-coins" style="color:#00D4FF; font-size:14px;"></i>
+                </div>
+                <div>
+                  <div class="text-xs" style="color:#6B7A99;">Total Ad Spend Managed</div>
+                  <div class="font-black text-2xl neon-cyan" id="c2">11,510.68</div>
+                </div>
+              </div>
+              <div class="text-xs font-mono" style="color:#6B7A99;">EGP</div>
+            </div>
+
+            <div class="flex items-center justify-between py-3">
+              <div class="flex items-center gap-3">
+                <div style="width:36px; height:36px; border-radius:10px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center;">
+                  <i class="fas fa-arrow-trend-down" style="color:#00FFB2; font-size:14px;"></i>
+                </div>
+                <div>
+                  <div class="text-xs" style="color:#6B7A99;">Average Cost Per Lead</div>
+                  <div class="font-black text-2xl neon-text" id="c3">38.75</div>
+                </div>
+              </div>
+              <div class="text-xs font-mono" style="color:#6B7A99;">EGP / Lead</div>
+            </div>
+          </div>
+
+          <!-- Mini sparkline visual -->
+          <div class="mt-5 pt-4" style="border-top:1px solid #1E2A42;">
+            <div class="text-xs mb-2" style="color:#6B7A99;">CPL Optimization Trend →</div>
+            <div class="flex items-end gap-1" style="height:36px;">
+              <div style="flex:1; background:#1E2A42; border-radius:3px 3px 0 0; height:100%;"></div>
+              <div style="flex:1; background:#1E2A42; border-radius:3px 3px 0 0; height:85%;"></div>
+              <div style="flex:1; background:#1E2A42; border-radius:3px 3px 0 0; height:72%;"></div>
+              <div style="flex:1; background:#1E2A42; border-radius:3px 3px 0 0; height:55%;"></div>
+              <div style="flex:1; background:linear-gradient(180deg,#00FFB2,#00a87a); border-radius:3px 3px 0 0; height:35%;"></div>
+            </div>
+            <div class="flex justify-between text-xs mt-1" style="color:#6B7A99; font-family:'Space Mono',monospace;">
+              <span>49.95</span><span>35.72</span><span>25.16</span><span>42.50</span><span style="color:#00FFB2;">17.32</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2 mt-4">
+          <span style="background:rgba(0,255,178,0.08); border:1px solid rgba(0,255,178,0.2); color:#00FFB2; border-radius:6px; padding:4px 12px; font-size:0.75rem;">Meta Ads</span>
+          <span style="background:rgba(0,255,178,0.08); border:1px solid rgba(0,255,178,0.2); color:#00FFB2; border-radius:6px; padding:4px 12px; font-size:0.75rem;">B2B Lead Gen</span>
+          <span style="background:rgba(0,255,178,0.08); border:1px solid rgba(0,255,178,0.2); color:#00FFB2; border-radius:6px; padding:4px 12px; font-size:0.75rem;">CBO / ABO</span>
+          <span style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); color:#00D4FF; border-radius:6px; padding:4px 12px; font-size:0.75rem;">Performance Analytics</span>
+          <span style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); color:#00D4FF; border-radius:6px; padding:4px 12px; font-size:0.75rem;">Audience Targeting</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─────────────────────────────────────────
+  METRICS DASHBOARD
+───────────────────────────────────────── -->
+<section id="metrics" class="py-20 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="text-center mb-12">
+      <div class="section-label mb-3">Performance Dashboard</div>
+      <h2 class="text-3xl sm:text-4xl font-black mb-3">الأرقام تتحدث</h2>
+      <p class="text-base" style="color:#6B7A99; max-width:480px; margin:0 auto;">
+        نتائج حقيقية من حملات نشطة ومكتملة — بدون تضخيم.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-3 gap-6">
+
+      <div class="metric-card p-6 text-center">
+        <div class="text-5xl font-black neon-text mb-2">297</div>
+        <div class="font-bold text-base mb-1">B2B Qualified Leads</div>
+        <div class="text-sm" style="color:#6B7A99;">عملاء محتملون عالي الجودة</div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:90%;"></div>
+        </div>
+      </div>
+
+      <div class="metric-card p-6 text-center">
+        <div class="text-5xl font-black neon-cyan mb-2">11.5K</div>
+        <div class="font-bold text-base mb-1">Ad Spend Managed</div>
+        <div class="text-sm" style="color:#6B7A99;">إجمالي الإنفاق المُدار — EGP</div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:75%; background:linear-gradient(90deg,#00D4FF,#0090B3);"></div>
+        </div>
+      </div>
+
+      <div class="metric-card p-6 text-center">
+        <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
+          <div class="text-5xl font-black neon-text mb-2">38.75</div>
+        </div>
+        <div class="font-bold text-base mb-1">Average CPL</div>
+        <div class="text-sm" style="color:#6B7A99;">متوسط تكلفة العميل المحتمل — EGP</div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:60%;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Best CPL highlight -->
+    <div class="mt-8 glass-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div style="width:48px; height:48px; border-radius:12px; background:rgba(0,255,178,0.1); border:1px solid rgba(0,255,178,0.3); display:flex; align-items:center; justify-content:center;">
+          <i class="fas fa-trophy" style="color:#00FFB2; font-size:18px;"></i>
+        </div>
+        <div>
+          <div class="text-xs section-label mb-1">Best Performing Campaign</div>
+          <div class="font-bold text-base">حملة تجربة قاعة المحاضرات - نسخة</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-8">
+        <div class="text-center">
+          <div class="text-2xl font-black neon-text">17.32 EGP</div>
+          <div class="text-xs" style="color:#6B7A99;">Cost Per Lead</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-black" style="color:#E8EDF5;">24</div>
+          <div class="text-xs" style="color:#6B7A99;">Leads Generated</div>
+        </div>
+        <span class="badge-active">🔥 نشطة</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─────────────────────────────────────────
+  CASE STUDY
+───────────────────────────────────────── -->
+<section id="casestudy" class="py-20 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="mb-12">
+      <div class="section-label mb-3">Featured Case Study</div>
+      <h2 class="text-3xl sm:text-4xl font-black mb-4">قصة نجاح: السوق الخدمي · B2B</h2>
+      <p style="color:#6B7A99; max-width:580px;">كيف حولنا ميزانية محدودة إلى 297 عميل محتمل حقيقي لمساحة أعمال مميزة — خطوة خطوة.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Client profile -->
+      <div class="glass-card p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-building" style="color:#00D4FF;"></i>
+          </div>
+          <div class="section-label">Client Profile</div>
+        </div>
+        <h3 class="font-bold text-base mb-3">Co-Working Space & Venue للشركات</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">
+          مساحة عمل مشتركة Premium وقاعات محاضرات متكاملة تستهدف العملاء من الشركات (B2B) لتأجير طويل الأمد واستضافة الفعاليات التدريبية.
+        </p>
+        <div class="mt-4 space-y-2">
+          <div class="flex items-center gap-2 text-sm" style="color:#6B7A99;">
+            <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i> Corporate Workspace Rentals
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:#6B7A99;">
+            <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i> Lecture Hall Bookings
+          </div>
+          <div class="flex items-center gap-2 text-sm" style="color:#6B7A99;">
+            <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i> Event & Training Venues
+          </div>
+        </div>
+      </div>
+
+      <!-- Challenge -->
+      <div class="glass-card p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(255,80,80,0.08); display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-exclamation-triangle" style="color:#FF6B6B;"></i>
+          </div>
+          <div class="section-label">The Challenge</div>
+        </div>
+        <h3 class="font-bold text-base mb-3">المشكلة: كثرة الاستفسارات غير المؤهلة</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">
+          منافسة شديدة في السوق الخدمي مع صعوبة تصفية الاستفسارات العشوائية والتركيز على العملاء الجادين من الشركات والمدربين المحترفين.
+        </p>
+        <div class="mt-4 p-3" style="background:rgba(255,107,107,0.06); border:1px solid rgba(255,107,107,0.15); border-radius:8px;">
+          <div class="text-xs font-mono" style="color:#FF6B6B;">PROBLEM_IDENTIFIED</div>
+          <div class="text-sm mt-1" style="color:#A8B4CC;">High CPL + Low Lead Quality + Learning Phase Disruptions</div>
+        </div>
+      </div>
+
+      <!-- Strategy -->
+      <div class="glass-card p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:40px; height:40px; border-radius:10px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center;">
+            <i class="fas fa-chess-knight" style="color:#00FFB2;"></i>
+          </div>
+          <div class="section-label">Strategy Executed</div>
+        </div>
+        <h3 class="font-bold text-base mb-3">الاستراتيجية: Urgent Sprint + ABO Growth</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="timeline-dot mt-1.5"></div>
+            <p class="text-sm" style="color:#A8B4CC;">Urgent Sprint Framework لاختبار سريع للجماهير بمدة 48-72 ساعة</p>
+          </div>
+          <div class="flex gap-3">
+            <div class="timeline-dot mt-1.5" style="background:#00D4FF; box-shadow:0 0 8px rgba(0,212,255,0.6);"></div>
+            <p class="text-sm" style="color:#A8B4CC;">محادثات مخصصة عبر الرسائل (WhatsApp) لالتقاط النية الفورية</p>
+          </div>
+          <div class="flex gap-3">
+            <div class="timeline-dot mt-1.5"></div>
+            <p class="text-sm" style="color:#A8B4CC;">Custom Audiences من المدربين وHR المؤسسات ومنظمي الفعاليات</p>
+          </div>
+          <div class="flex gap-3">
+            <div class="timeline-dot mt-1.5" style="background:#00D4FF; box-shadow:0 0 8px rgba(0,212,255,0.6);"></div>
+            <p class="text-sm" style="color:#A8B4CC;">إبقاء الحملات في Learning Phase دون تدخل لضمان الاستقرار</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Result bar -->
+    <div class="mt-6 glass-card p-6">
+      <div class="section-label mb-4">Measurable Results</div>
+      <div class="grid sm:grid-cols-4 gap-6">
+        <div class="text-center">
+          <div class="text-3xl font-black neon-text">↓ 65%</div>
+          <div class="text-sm mt-1" style="color:#6B7A99;">تحسن في CPL</div>
+          <div class="text-xs" style="color:#1E2A42;">49.95 → 17.32 EGP</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-black neon-cyan">5x</div>
+          <div class="text-sm mt-1" style="color:#6B7A99;">نمو في Lead Volume</div>
+          <div class="text-xs" style="color:#1E2A42;">Scaled sustainably</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-black neon-text">297</div>
+          <div class="text-sm mt-1" style="color:#6B7A99;">Qualified B2B Leads</div>
+          <div class="text-xs" style="color:#1E2A42;">Across 5 campaigns</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-black neon-cyan">11.5K</div>
+          <div class="text-sm mt-1" style="color:#6B7A99;">Total Spend — EGP</div>
+          <div class="text-xs" style="color:#1E2A42;">Efficient allocation</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─────────────────────────────────────────
+  CAMPAIGNS SHOWCASE
+───────────────────────────────────────── -->
+<section id="campaigns" class="py-20 px-6 relative">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="mb-12">
+      <div class="section-label mb-3">Live Campaigns Data</div>
+      <h2 class="text-3xl sm:text-4xl font-black mb-4">الحملات الإعلانية الفعلية</h2>
+      <p style="color:#6B7A99; max-width:520px;">بيانات حقيقية مباشرة من Meta Ads Manager — شفافية تامة في النتائج.</p>
+    </div>
+
+    <div class="space-y-4">
+
+      <!-- Campaign 1 -->
+      <div class="glass-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <div class="font-mono text-xs mb-1" style="color:#6B7A99;">CAMPAIGN_01</div>
+            <h3 class="font-bold text-base">B2B_Leads_WhatsApp_Urgent_Sprint_May2026</h3>
+          </div>
+          <span class="badge-stopped self-start sm:self-auto">متوقف</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Leads Generated</div>
+            <div class="text-xl font-black neon-text">92</div>
+            <div class="text-xs" style="color:#6B7A99;">محادثات عبر الرسائل</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Cost Per Lead</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">49.95 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Total Spend</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">4,594.99 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Objective</div>
+            <div class="text-sm font-semibold" style="color:#A8B4CC;">Lead Generation</div>
+            <div class="text-xs" style="color:#6B7A99;">العملاء المحتملون</div>
+          </div>
+        </div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:31%; background:linear-gradient(90deg,#6B7A99,#4A5568);"></div>
+        </div>
+      </div>
+
+      <!-- Campaign 2 -->
+      <div class="glass-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <div class="font-mono text-xs mb-1" style="color:#6B7A99;">CAMPAIGN_02</div>
+            <h3 class="font-bold text-base">B2B_Leads_ABO_CoWorking_Growth_June2026</h3>
+          </div>
+          <span class="badge-stopped self-start sm:self-auto">متوقف</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Leads Generated</div>
+            <div class="text-xl font-black neon-text">140</div>
+            <div class="text-xs" style="color:#6B7A99;">Highest Volume</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Cost Per Lead</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">35.72 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Total Spend</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">5,000.25 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Objective</div>
+            <div class="text-sm font-semibold" style="color:#A8B4CC;">ABO Growth</div>
+            <div class="text-xs" style="color:#6B7A99;">العملاء المحتملون</div>
+          </div>
+        </div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:47%;"></div>
+        </div>
+      </div>
+
+      <!-- Campaign 3 -->
+      <div class="glass-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <div class="font-mono text-xs mb-1" style="color:#6B7A99;">CAMPAIGN_03</div>
+            <h3 class="font-bold text-base">حملة تجربة قاعة المحاضرات</h3>
+          </div>
+          <span class="badge-stopped self-start sm:self-auto">متوقف</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Leads Generated</div>
+            <div class="text-xl font-black neon-text">14</div>
+            <div class="text-xs" style="color:#6B7A99;">Venue Bookings</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Cost Per Lead</div>
+            <div class="text-xl font-black" style="color:#00FFB2;">25.16 EGP</div>
+            <div class="text-xs" style="color:#00FFB2;">✓ Efficient</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Total Spend</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">352.26 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Objective</div>
+            <div class="text-sm font-semibold" style="color:#A8B4CC;">Venue Bookings</div>
+            <div class="text-xs" style="color:#6B7A99;">قاعة المحاضرات</div>
+          </div>
+        </div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:50%;"></div>
+        </div>
+      </div>
+
+      <!-- Campaign 4 — BEST (highlighted) -->
+      <div class="glass-card p-6 cpl-best" style="border-color:rgba(0,255,178,0.3);">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <div class="font-mono text-xs mb-1" style="color:#00FFB2;">CAMPAIGN_04 · BEST CPL</div>
+            <h3 class="font-bold text-base">حملة تجربة قاعة المحاضرات — نسخة</h3>
+            <div class="text-xs mt-1" style="color:#00FFB2;">🔥 Massive Optimization Achieved</div>
+          </div>
+          <span class="badge-active self-start sm:self-auto">🔥 نشطة</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Leads Generated</div>
+            <div class="text-xl font-black neon-text">24</div>
+            <div class="text-xs" style="color:#6B7A99;">& Growing</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Cost Per Lead</div>
+            <div class="text-2xl font-black neon-text">17.32 EGP</div>
+            <div class="text-xs" style="color:#00FFB2;">⚡ Best in Portfolio</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Total Spend</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">415.65 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Objective</div>
+            <div class="text-sm font-semibold" style="color:#A8B4CC;">Scaling Venue</div>
+            <div class="text-xs" style="color:#6B7A99;">قيد التوسع</div>
+          </div>
+        </div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:96%;"></div>
+        </div>
+      </div>
+
+      <!-- Campaign 5 -->
+      <div class="glass-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <div class="font-mono text-xs mb-1" style="color:#6B7A99;">CAMPAIGN_05</div>
+            <h3 class="font-bold text-base">حملة إعلانية جديدة بهدف العملاء المحتملون</h3>
+          </div>
+          <span class="badge-active self-start sm:self-auto">🔥 نشطة</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Leads Generated</div>
+            <div class="text-xl font-black neon-text">27</div>
+            <div class="text-xs" style="color:#6B7A99;">Fresh B2B Inquiries</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Cost Per Lead</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">42.50 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Total Spend</div>
+            <div class="text-xl font-black" style="color:#E8EDF5;">1,147.53 EGP</div>
+          </div>
+          <div>
+            <div class="text-xs mb-1" style="color:#6B7A99;">Objective</div>
+            <div class="text-sm font-semibold" style="color:#A8B4CC;">Fresh B2B</div>
+            <div class="text-xs" style="color:#6B7A99;">العملاء المحتملون</div>
+          </div>
+        </div>
+        <div class="mt-4 prog-bar">
+          <div class="prog-fill" style="width:9%; background:linear-gradient(90deg,#00D4FF,#0090B3);"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─────────────────────────────────────────
+  EXPERTISE SECTION
+───────────────────────────────────────── -->
+<section class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="text-center mb-12">
+      <div class="section-label mb-3">Core Expertise</div>
+      <h2 class="text-3xl sm:text-4xl font-black">ما الذي أقدمه لعملك؟</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-crosshairs" style="color:#00FFB2; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Hyper-Targeted Audience</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">بناء شرائح جمهور دقيقة تستهدف صناع القرار في الشركات — HR, Training Managers, Business Owners.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-comments" style="color:#00D4FF; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Message-Led Lead Generation</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">توليد Leads عبر محادثات WhatsApp مخصصة لالتقاط النية الفورية وتأهيل العميل قبل أي تواصل مبيعات.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-chart-bar" style="color:#00FFB2; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">CBO / ABO Scaling</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">هيكلة حملات CBO و ABO بذكاء لضمان الاستقرار في Learning Phase وتحقيق أقل CPL ممكن.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-flask" style="color:#00D4FF; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">A/B Testing & Iteration</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">اختبار منهجي للإبداعات والجماهير وطرق الاستهداف لتحديد الفائز وتضخيم الميزانية نحوه.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,255,178,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-analytics" style="color:#00FFB2; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Performance Reporting</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">تقارير أداء واضحة ومفصلة: CPL, ROAS, CTR, Frequency — بدون غموض أو تضخيم.</p>
+      </div>
+
+      <div class="glass-card p-6">
+        <div style="width:44px; height:44px; border-radius:12px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center; margin-bottom:16px;">
+          <i class="fas fa-layer-group" style="color:#00D4FF; font-size:18px;"></i>
+        </div>
+        <h3 class="font-bold text-base mb-2">Full-Funnel Strategy</h3>
+        <p class="text-sm" style="color:#A8B4CC; line-height:1.8;">من Awareness إلى Conversion — بناء Funnel متكامل يضمن جودة الLead وسهولة إغلاق المبيعات.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─────────────────────────────────────────
+  CTA SECTION
+───────────────────────────────────────── -->
+<section id="cta" class="py-24 px-6 relative overflow-hidden">
+
+  <div class="glow-emerald" style="top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; opacity:0.6;"></div>
+
+  <div class="max-w-2xl mx-auto text-center relative z-10">
+
+    <div class="section-label mb-4">Ready to Scale?</div>
+
+    <h2 class="text-4xl sm:text-5xl font-black mb-6 leading-tight">
+      جاهز تنمي شركتك<br/>
+      <span class="neon-text">بشكل حقيقي وقابل للقياس؟</span>
+    </h2>
+
+    <p class="text-base mb-8" style="color:#A8B4CC; max-width:440px; margin:0 auto 32px;">
+      تواصل معي الآن لمناقشة استراتيجية Lead Generation مخصصة لشركتك — أول استشارة مجانية بالكامل.
+    </p>
+
+    <a href="https://wa.me/201141931871" target="_blank" class="btn-wa" style="font-size:1.1rem; padding:18px 40px;">
+      <i class="fab fa-whatsapp text-xl"></i>
+      تواصل معي عبر واتساب لبدء نمو شركتك
+    </a>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm" style="color:#6B7A99;">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i>
+        أول استشارة مجانية
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i>
+        نتائج قابلة للقياس
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-check-circle" style="color:#00FFB2; font-size:12px;"></i>
+        تقارير شفافة بالكامل
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────────
+  FOOTER
+───────────────────────────────────────── -->
+<footer style="border-top:1px solid #1E2A42; padding:28px 24px; text-align:center;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div style="font-family:'Space Mono',monospace; font-size:0.8rem; color:#6B7A99;">
+      © 2026 كريم عصام — Performance Marketing Specialist
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="https://wa.me/201141931871" target="_blank"
+         style="color:#6B7A99; text-decoration:none; font-size:0.85rem; transition:color 0.2s;"
+         onmouseover="this.style.color='#00FFB2'"
+         onmouseout="this.style.color='#6B7A99'">
+        <i class="fab fa-whatsapp ml-1"></i> واتساب
+      </a>
+      <span style="color:#1E2A42;">|</span>
+      <span style="color:#6B7A99; font-size:0.8rem; font-family:'Space Mono',monospace;">Meta Ads · B2B · Lead Gen</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
 
